@@ -25,5 +25,11 @@
     <ProjectReference Include="..\TechSpire.Domain\TechSpire.Domain.csproj" />
     <ProjectReference Include="..\TechSpire.infra\TechSpire.infra.csproj" />
   </ItemGroup>
+	
+<ItemGroup>
+		<Content Include="Templates\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 
 </Project>

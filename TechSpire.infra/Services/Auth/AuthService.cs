@@ -285,7 +285,7 @@ public class AuthService(
         var emailbody = EmailBodyBuilder.GenerateEmailBody("EmailConfirmation",
             new Dictionary<string, string> {
                     { "{{name}}", user.FirstName } ,
-                    { "{{action_url}}", $"{origin}/auth/emailconfigration?userid={user.Id}&code={code}" }
+                    { "{{action_url}}", $"techspireapp.runasp.net/auth/emailconfigration?userid={user.Id}&code={code}" }
 
             });
 
@@ -300,7 +300,7 @@ public class AuthService(
         var emailbody = EmailBodyBuilder.GenerateEmailBody("ForgetPassword",
             new Dictionary<string, string> {
                     { "{{name}}", user.FirstName } ,
-                    { "{{action_url}}", $"{origin}/auth/forgetpassword?email={user.Email}&code={code}" }
+                    { "{{action_url}}", $"techspireapp.runasp.net/auth/forgetpassword?email={user.Email}&code={code}" }
 
             });
 

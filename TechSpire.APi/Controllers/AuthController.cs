@@ -42,7 +42,7 @@ public class AuthController(IAuthService service) : ControllerBase
         var response = await service.ConfirmEmailAsync(request);
 
         return response.IsSuccess ?
-            Ok() :
+            Ok("Email Confirmed Successfully") :
             response.ToProblem();
     }
 
