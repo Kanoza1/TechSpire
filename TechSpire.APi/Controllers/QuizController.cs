@@ -37,7 +37,7 @@ public class QuizController(IQuizService service) : ControllerBase
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
-    
+    // call has ended
     [HttpPost("insights")]
     public async Task<IActionResult> GetUserInsights()
     {
