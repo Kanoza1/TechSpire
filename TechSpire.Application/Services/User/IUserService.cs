@@ -10,8 +10,4 @@ public interface IUserService
     Task<Result> UpdateUserProfile(string id, UpdateUserProfileRequest request);
     Task<Result> ChangePassword(string id, ChangePasswordRequest request);
 
-    public Task<ApplicataionUser> GetCurrentUser();
-    public Task<Quiz> GetQuizByLevelId(int? levelId);
-    public Task<List<Question>> GetQuestionsByQuizId(int quizId);
-
 }

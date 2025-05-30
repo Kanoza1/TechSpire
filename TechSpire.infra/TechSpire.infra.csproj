@@ -42,4 +42,8 @@
     <ProjectReference Include="..\TechSpire.Domain\TechSpire.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\User\" />
+  </ItemGroup>
+
 </Project>

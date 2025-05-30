@@ -6,11 +6,13 @@ using TechSpire.infra;
 using TechSpire.infra.Authentication;
 using TechSpire.infra.Dbcontext;
 using TechSpire.infra.Services.Auth;
-using TechSpire.infra.Services.User;
 using TechSpire.infra.Settings;
 using Hangfire;
 using TechSpire.Application.Services;
 using TechSpire.infra.Services;
+using Org.BouncyCastle.Asn1.Tsp;
+using TechSpire.infra.Services.Fucckinglearning;
+using TechSpire.infra.Services.User;
 //using Microsoft.OpenApi.Models;
 
 
@@ -33,6 +35,7 @@ public static class InfraDependencies
         Services.AddScoped<IQuizService, QuizService>();
         Services.AddScoped<IFavService, FavService>();
         Services.AddScoped<IDataService, DataService>();
+        Services.AddScoped<ITimeService, TimeService>();
 
         Services.AddProblemDetails();
 

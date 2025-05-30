@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace TechSpire.Domain.Entities;
 public class UsersProgress
 {
-        public string UserId { get; set; }
+    public int Id { get; set; }
+    public string UserId { get; set; }
         public DateTime StudiedAt { get; set; }
 
         public ApplicataionUser User { get; set; }

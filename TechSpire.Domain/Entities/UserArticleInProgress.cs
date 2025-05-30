@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace TechSpire.Domain.Entities;
 public class UserArticleInProgress
 {
-        public string AppUserId { get; set; }
+        public int Id { get; set; }
+    public string AppUserId { get; set; }
         public int ArticleId { get; set; }
         public Article Book { get; set; }
         public ApplicataionUser AppUser { get; set; }

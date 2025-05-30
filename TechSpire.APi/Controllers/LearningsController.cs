@@ -1,34 +1,39 @@
 ﻿using MapsterMapper;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TechSpire.Application.Dto;
 using TechSpire.Application.Services;
 using TechSpire.Domain.Entities;
 using TechSpire.infra;
+using TechSpire.infra.Dbcontext;
+using TechSpire.infra.Extensions;
+using TechSpire.infra.Services.Fucckinglearning;
 
 namespace TechSpire.APi.Controllers;
-[Route("api/[controller]")]
+[Route("[controller]")]
 [ApiController]
-public class LearningsController : ControllerBase
+[Authorize]
+public class LearningsController(ITimeService service, AppDbcontext dbcontext) : ControllerBase
 {
+    private readonly ITimeService service = service;
+    private readonly AppDbcontext dbcontext = dbcontext;
+
     // Endpoint to get user progress
     [HttpPost("AddDailyProgress")]
     public async Task<ActionResult> AddDailyProgress(UserProgressDto userProgressDto)
     {
-        try
+        var userid = User.GetUserId();
+        var result = await service.lol(userid, userProgressDto);
+        if (result)
         {
-            AspNetUser currentUser = await userService.GetCurrentUser();
-            DateTime today = DateTime.Now;
-            UsersProgress userProgress = mapper.Map<UsersProgress>(userProgressDto);
-            userProgress.StudiedAt = today;
-            userProgress.UserId = currentUser.Id;
-            unitOfWork.Repository<UsersProgress>().Add(userProgress);
-            await unitOfWork.Complete();
-            return Ok("You Recorded the user's progress Successfully");
+            return Ok(new { Message = "Your progress has been added successfully." });
         }
-        catch (Exception ex)
+        else
         {
-            return BadRequest(new { Message = ex.Message.ToString() });
+            return BadRequest(new { Message = "Failed to add your progress. Please try again." });
         }
 
     }
@@ -36,25 +41,16 @@ public class LearningsController : ControllerBase
     [HttpPost("AddUserInProgressBook")]
     public async Task<ActionResult> AddUserInProgressBook(InProgressBookDto inProgressBook)
     {
-        try
-        {
-            if (ModelState.IsValid)
-            {
-                ApplicataionUser currentUser = await userService.GetCurrentUser();
-                // Book book = await unitOfWork.Repository<Book>().GetByIdAsync(inProgressBook.BookId);
-                UserBookInProgress InProgressBook = mapper.Map<UserBookInProgress>(inProgressBook);
-                InProgressBook.AspNetUserId = currentUser.Id;
-                //  InProgressBook.CompletedPercentage = (inProgressBook.CurrentPage / book.PageCount) * 100;
-                unitOfWork.Repository<UserBookInProgress>().Add(InProgressBook);
-                await unitOfWork.Complete();
-                return Ok(new { Message = "You Added Your Inprogress Book data Successfully" });
-            }
-            return BadRequest("You entered wrong data, please try again");
 
-        }
-        catch (Exception ex)
+        var userid = User.GetUserId();
+        var result = await service.loll2(inProgressBook, userid);
+        if (result)
         {
-            return BadRequest(ex.Message);
+            return Ok(new { Message = "Your in-progress book has been added successfully." });
+        }
+        else
+        {
+            return BadRequest(new { Message = "Failed to add your in-progress book. Please try again." });
         }
 
     }
@@ -62,14 +58,12 @@ public class LearningsController : ControllerBase
     [HttpGet("GetWeeklyUserProgress")]
     public async Task<ActionResult> GetWeeklyUserProgress()
     {
+        var userId = User.GetUserId();
         try
         {
-            ApplicataionUser currentUser = await userService.GetCurrentUser();
-            DateTime currentWeekStart = timeService.GetCurrentWeekStartDate();
-            DateTime lastWeekStart = timeService.GetLastWeekDates(currentWeekStart)[0];
-            DateTime lastWeekEnd = timeService.GetLastWeekDates(currentWeekStart)[1];
-            List<ProgressDto> currentWeekProgresses = await ComputeCurrentWeekProgress(currentUser, currentWeekStart);
-            List<ProgressDto> lastWeekProgresses = await ComputeLastWeekProgress(currentUser, lastWeekStart, lastWeekEnd);
+            var (result, result2) = await service.lol3(User.GetUserId());
+            List<ProgressDto> currentWeekProgresses = await ComputeCurrentWeekProgress(userId, result2);
+            List<ProgressDto> lastWeekProgresses = await ComputeLastWeekProgress(userId, result, result2);
             return Ok(new
             {
                 CurrentWeek = currentWeekProgresses,
@@ -87,27 +81,33 @@ public class LearningsController : ControllerBase
     [HttpGet("GetStudyBooks")]
     public async Task<ActionResult> GetStudyBooks()
     {
+        var userId = User.GetUserId();
         try
         {
-            ApplicataionUser currentUser = await userService.GetCurrentUser();
-            UserBookInProgressByUserId userBookInProgressSpec = new UserBookInProgressByUserId(currentUser.Id);
-            UserBookInProgress inProgressBook = await unitOfWork.Repository<UserBookInProgress>().GetEntityWithSpecification(userBookInProgressSpec);
-            Book nextBook = await unitOfWork.Repository<Book>().GetByIdAsync(inProgressBook.BookId + 1);
-            return Ok(new { InProgressBook = inProgressBook, NextBook = nextBook });
+            var (inProgressBook, nextBook) = await service.lol4(userId);
+            if (inProgressBook == null)
+            {
+                return NotFound(new { Message = "No in-progress book found." });
+            }
+            return Ok(new
+            {
+                InProgressBook = inProgressBook,
+                NextBook = nextBook
+            });
         }
         catch (Exception ex)
         {
-            return BadRequest(new { Message = ex.Message });
+            return BadRequest(ex.Message);
         }
 
     }
 
     // =====================================================
-    private async Task<List<ProgressDto>> ComputeLastWeekProgress(ApplicataionUser currentUser, DateTime lastWeekStart, DateTime lastWeekEnd)
+    private async Task<List<ProgressDto>> ComputeLastWeekProgress(string currentUser, DateTime lastWeekStart, DateTime lastWeekEnd)
     {
-        LastWeekUserProgress lastWeekUserProgressSpec = new
-            LastWeekUserProgress(currentUser.Id, lastWeekStart, lastWeekEnd);
-        List<UsersProgress> lastWeekUserprogress = await unitOfWork.Repository<UsersProgress>().ListAsync(lastWeekUserProgressSpec);
+        List<UsersProgress> lastWeekUserprogress = await dbcontext.UsersProgress
+            .Where(x => x.UserId == currentUser && x.StudiedAt >= lastWeekStart && x.StudiedAt < lastWeekEnd)
+            .ToListAsync(); // Use the DbContext directly for simplicity
         // int bookCount = await unitOfWork.Repository<Book>().Count();
         // int articleCount = await unitOfWork.Repository<Article>().Count();
         // int postCount = await unitOfWork.Repository<Post>().Count();
@@ -127,14 +127,21 @@ public class LearningsController : ControllerBase
         return dailyProgress;
     }
     // =====================================================
-    private async Task<List<ProgressDto>> ComputeCurrentWeekProgress(ApplicataionUser currentUser, DateTime currentWeekStart)
+    private async Task<List<ProgressDto>> ComputeCurrentWeekProgress(string currentUser, DateTime currentWeekStart)
     {
-        CurrentWeekUserProgress currentWeekUserProgressSpec = new
-            CurrentWeekUserProgress(currentUser.Id, currentWeekStart);
-        List<UsersProgress> currentWeekUserprogress = await unitOfWork.Repository<UsersProgress>().ListAsync(currentWeekUserProgressSpec);
+
+        List<UsersProgress> currentWeekUserprogress = await dbcontext.UsersProgress
+            .Where(x => x.UserId == currentUser && x.StudiedAt >= currentWeekStart)
+            .ToListAsync();
+
+
+
+
+        // Use the DbContext directly for simplicity
         //int bookCount = await unitOfWork.Repository<Book>().Count();
         // int articleCount = await unitOfWork.Repository<Article>().Count();
         // int postCount = await unitOfWork.Repository<Post>().Count();
+        // meeting 
         List<ProgressDto> dailyProgress = new List<ProgressDto>();
         foreach (var item in currentWeekUserprogress)
         {

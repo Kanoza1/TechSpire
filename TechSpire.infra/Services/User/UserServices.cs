@@ -52,40 +52,4 @@ public class UserServices(UserManager<ApplicataionUser> manager) : IUserService
 
     //======================================================================================
 
-        private readonly IUnitOfWork unitOfWork;
-        private readonly IHttpContextAccessor httpContextAccessor;
-
-
-    public UserService(
-            IGenericRepository<ApplicataionUser> userRepository,
-            IGenericRepository<Quiz> quizRepository,
-            IGenericRepository<Domain.Entities.Question> questionRepository,
-            IHttpContextAccessor httpContextAccessor,
-            IUnitOfWork unitOfWork
-        )
-        {
-
-            this.httpContextAccessor = httpContextAccessor;
-            this.unitOfWork = unitOfWork;
-        }
-        public async Task<ApplicataionUser> GetCurrentUser()
-        {
-            string userId = httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            CurrentUser currentUserSpec = new CurrentUser(userId);
-            return await unitOfWork.Repository<ApplicataionUser>().GetByUserIdAsync(userId);
-        }
-
-
-
-        public async Task<Quiz> GetQuizByLevelId(int? levelId)
-        {
-            QuizByLevelSpec quizByLevelSpec = new QuizByLevelSpec(levelId);
-            return await unitOfWork.Repository<Quiz>().GetEntityWithSpecification(quizByLevelSpec);
-        }
-
-        public async Task<List<Question>> GetQuestionsByQuizId(int quizId)
-        {
-            QuestionWithChoicesByQuizId questionWithChoicesSpec = new QuestionWithChoicesByQuizId(quizId);
-            return await unitOfWork.Repository<Question>().ListAsync(questionWithChoicesSpec);
-        }
 }
