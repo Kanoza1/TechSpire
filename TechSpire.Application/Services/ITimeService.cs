@@ -1,0 +1,12 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TechSpire.Application.Services;
+public interface ITimeService
+{
+    DateTime GetCurrentWeekStartDate();
+    DateTime[] GetLastWeekDates(DateTime currentWeekStart);
+}

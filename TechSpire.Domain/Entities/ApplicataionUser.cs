@@ -24,4 +24,8 @@ public class ApplicataionUser : IdentityUser
         }
         return progress;
     }
+
+    public virtual ICollection<UserBookInProgress> UserBookInProgresses { get; set; } = new List<UserBookInProgress>();
+
+    public virtual ICollection<UsersProgress> UsersProgresses { get; set; } = new List<UsersProgress>();
 }
