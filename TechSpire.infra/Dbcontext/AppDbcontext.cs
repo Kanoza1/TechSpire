@@ -26,6 +26,7 @@ public class AppDbcontext(DbContextOptions<AppDbcontext> options) : IdentityDbCo
 
 
 
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

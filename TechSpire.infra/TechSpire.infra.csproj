@@ -8,8 +8,10 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="DotnetGeminiSDK" Version="1.0.14" />
     <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+    <PackageReference Include="GeminiChat.DotNet" Version="1.0.5" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.8.18" />
     <PackageReference Include="Hangfire.Core" Version="1.8.18" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.8.18" />
@@ -33,6 +35,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="9.0.4" />
+    <PackageReference Include="Mscc.GenerativeAI" Version="2.6.1" />
+    <PackageReference Include="Mscc.GenerativeAI.Web" Version="2.6.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="9.0.4" />
   </ItemGroup>
