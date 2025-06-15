@@ -17,6 +17,13 @@ public class FavService(AppDbcontext dbcontext , UserManager<ApplicataionUser> m
 
     public async Task<Result> AddItem(string UserId, FavRequest request)
     {
+        // Validate User
+        var userExists = await dbcontext.Users
+            .AnyAsync(u => u.Id == UserId);
+        if (!userExists)
+            throw new Exception("Can't add favourite : User doesn't exist.");
+
+
         var ItemIsExicted = await dbcontext.Favs
             .AnyAsync(c=>c.ItemId == request.ItemId && c.UserId == UserId && c.Type == request.Type);
 
@@ -25,12 +32,17 @@ public class FavService(AppDbcontext dbcontext , UserManager<ApplicataionUser> m
 
         if (!Enum.IsDefined(typeof(InSystem), request.Type))
         {
-            return Result.Failure(new Error("Invalidrequesttype","this type is in valid try again ",404));
+            return Result.Failure(new Error("Invalidrequesttype", "this type is in valid try again ", 404));
         }
+        //if (!Enum.TryParse<InSystem>(request.Type, true, out var parsedType))
+        //{
+        //    return Result.Failure(new Error("Invalidrequesttype", "This type is invalid, try again.", 404));
+        //}
 
         var fav = request.Adapt<Fav>();
+        fav.UserId = UserId;
 
-        await dbcontext.AddAsync(fav);
+        await dbcontext.Favs.AddAsync(fav);
         await dbcontext.SaveChangesAsync();
 
         return Result.Success();

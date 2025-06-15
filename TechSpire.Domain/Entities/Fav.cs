@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace TechSpire.Domain.Entities;
 public class Fav
 {
+    public int Id { get; set; }
     public int ItemId { get; set; }
     public string Type { get; set; } = string.Empty;
     public string UserId { get; set; } = string.Empty;

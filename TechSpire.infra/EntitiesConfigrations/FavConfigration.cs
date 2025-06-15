@@ -6,8 +6,9 @@ public class FavConfigration : IEntityTypeConfiguration<Fav>
 {
     public void Configure(EntityTypeBuilder<Fav> builder)
     {
-        builder
-            .HasKey(ua => new {ua.UserId, ua.ItemId, ua.Type});
+        //builder
+            //.HasKey(ua => new {ua.UserId, ua.ItemId, ua.Type});
+
     }
 }
 
