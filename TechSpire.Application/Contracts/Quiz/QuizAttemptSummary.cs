@@ -10,7 +10,8 @@ public record QuizAttemptSummary
     int QuizId,
     string QuizTitle,
     double CorrectPercentage,
-    DateTime SubmittedAt
+    DateTime SubmittedAt,
+    Dictionary<int, double> QuestionTimes
     );
 
 public record UserQuizSummaryResponse

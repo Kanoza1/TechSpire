@@ -10,5 +10,7 @@ public record UserAnswerRequest
 ([Required(ErrorMessage = "QuestionId is required")]
  int QuestionId,
  [Required(ErrorMessage = "AnswerId is required")]
- int AnswerId
+ int AnswerId,
+    [Required(ErrorMessage = "TimeTakenInSeconds is required")]
+    double TimeTakenInSeconds
     );

@@ -11,7 +11,8 @@ public record WrongAnswerResponse
     string Text,
     List<string> SelectedAnswerText,
     List<string> CorrectAnswerText,
-    double QuestionScore
+    double QuestionScore,
+    double TimeTakenInSeconds
     );
 
 
