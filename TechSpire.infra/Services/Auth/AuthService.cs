@@ -49,15 +49,6 @@ public class AuthService(
 
         if (result.Succeeded)
         {
-            //var userRoles = await manager.GetRolesAsync(user);
-            //var UserPermissions = await dbcontext.Roles
-            //    .Join(dbcontext.RoleClaims, role => role.Id,
-            //    claim => claim.RoleId,
-            //    (role, claim) => new { role, claim })
-            //    .Where(x => userRoles.Contains(x.role.Name!))
-            //    .Select(x => x.claim.ClaimType)
-            //    .Distinct()
-            //    .ToListAsync();
             var (Token, ExpiresIn) = jwtProvider.GenerateToken(user);
 
             var RefreshToken = GenerateRefreshToken();
@@ -130,15 +121,6 @@ public class AuthService(
 
         UserRefreshToken.RevokedOn = DateTime.UtcNow;
 
-        //var userRoles = await manager.GetRolesAsync(user);
-        //var UserPermissions = await dbcontext.Roles
-        //    .Join(dbcontext.RoleClaims, role => role.Id,
-        //    claim => claim.RoleId,
-        //    (role, claim) => new { role, claim })
-        //    .Where(x => userRoles.Contains(x.role.Name!))
-        //    .Select(x => x.claim.ClaimType)
-        //    .Distinct()
-        //    .ToListAsync();
         var (newToken, ExpiresIn) = jwtProvider.GenerateToken(user);
 
         var newRefreshToken = GenerateRefreshToken();
@@ -247,9 +229,6 @@ public class AuthService(
 
         if (result.Succeeded)
         {
-
-
-
             return Result.Success();
         }
         var errors = result.Errors.First();

@@ -283,10 +283,10 @@ public class QuizService(AppDbcontext dbcontext) : IQuizService
             r.QuizId,
             r.Quiz?.Title ?? "Untitled Quiz",
             r.CorrectPercentage,
-            r.SubmittedAt,
-            await dbcontext.UserAnswers
-                .Where(ua => ua.UserId == userId && ua.Question.QuizId == r.QuizId)
-                .ToDictionaryAsync(ua => ua.QuestionId, ua => ua.TimeTakenInSeconds)
+            r.SubmittedAt
+            //await dbcontext.UserAnswers
+            //    .Where(ua => ua.UserId == userId && ua.Question.QuizId == r.QuizId)
+            //    .ToDictionaryAsync(ua => ua.QuestionId, ua => ua.TimeTakenInSeconds)
         )).ToList();
 
         double averageScore = quizResults.Average(r => r.CorrectPercentage);
