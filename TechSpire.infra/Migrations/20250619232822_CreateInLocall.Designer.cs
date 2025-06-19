@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TechSpire.infra.Dbcontext;
 
@@ -11,9 +12,11 @@ using TechSpire.infra.Dbcontext;
 namespace TechSpire.infra.Migrations
 {
     [DbContext(typeof(AppDbcontext))]
-    partial class AppDbcontextModelSnapshot : ModelSnapshot
+    [Migration("20250619232822_CreateInLocall")]
+    partial class CreateInLocall
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -825,14 +828,12 @@ namespace TechSpire.infra.Migrations
                     b.Property<int?>("TopicId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TopicId1")
+                    b.Property<int?>("TopicId1")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("QuizId");
-
-                    b.HasIndex("StageId");
 
                     b.HasIndex("TopicId1");
 
@@ -1268,21 +1269,11 @@ namespace TechSpire.infra.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("TechSpire.Domain.Entities.Stage", "Stage")
-                        .WithMany()
-                        .HasForeignKey("StageId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("TechSpire.Domain.Entities.Topic", "Topic")
                         .WithMany()
-                        .HasForeignKey("TopicId1")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("TopicId1");
 
                     b.Navigation("Quiz");
-
-                    b.Navigation("Stage");
 
                     b.Navigation("Topic");
                 });

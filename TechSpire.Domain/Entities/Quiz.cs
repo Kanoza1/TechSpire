@@ -7,6 +7,5 @@ public class Quiz
     public int StangeId { get; set; }
     public Stage Stange { get; set; } = default!;
     public List<Question> Questions { get; set; } = [];
-    public int? TopicId { get; set; }
-    public Topic? Topic { get; set; }
+    public ICollection<Topic> Topics { get; set; } = new List<Topic>();
 }

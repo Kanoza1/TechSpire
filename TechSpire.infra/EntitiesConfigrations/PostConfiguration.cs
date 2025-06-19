@@ -85,9 +85,9 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
             }
             );
 
-        builder.HasOne(p => p.Topic)
-               .WithMany(t => t.Posts)
-               .HasForeignKey(p => p.TopicId)
-               .OnDelete(DeleteBehavior.SetNull);
+        //builder.HasOne(p => p.Topic)
+        //       .WithMany(t => t.Posts)
+        //       .HasForeignKey(p => p.TopicId)
+        //       .OnDelete(DeleteBehavior.SetNull);
     }
 }

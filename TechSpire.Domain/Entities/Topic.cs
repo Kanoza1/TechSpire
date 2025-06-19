@@ -4,13 +4,19 @@ public class Topic
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
-    public ICollection<Book> Books { get; set; } = new List<Book>();
-    public ICollection<Article> Articles { get; set; } = new List<Article>();
-    public ICollection<Post> Posts { get; set; } = new List<Post>();
-    public ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
-    public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
-    public ICollection<Question> Questions { get; set; } = new List<Question>();
+    //public ICollection<Book> Books { get; set; } = new List<Book>();
+    //public ICollection<Question> Questions { get; set; } = new List<Question>();
+    public int? QuestionId { get; set; }
+    //public Question Question { get; set; } = default!;
     public int StageId { get; set; }
     public Stage Stage { get; set; } = default!;
-    // Optionally, you can add navigation properties if needed later
+    public int? BookId { get; set; }
+    public Book Book { get; set; } = default!;
+    public int? PostId { get; set; }
+    public Post Post { get; set; } = default!;
+    public int? ArticleId { get; set; }
+    public Article Article { get; set; } = default!;
+
+    public int? QuizId { get; set; }
+    public Quiz Quiz { get; set; } = default!;  
 } 

@@ -85,10 +85,10 @@ public class ArticleConfiguration : IEntityTypeConfiguration<Article>
             }
             );
 
-        builder.HasOne(a => a.Topic)
-               .WithMany(t => t.Articles)
-               .HasForeignKey(a => a.TopicId)
-               .OnDelete(DeleteBehavior.SetNull);
+        //builder.HasOne(a => a.Topic)
+        //       .WithMany(t => t.Articles)
+        //       .HasForeignKey(a => a.TopicId)
+        //       .OnDelete(DeleteBehavior.SetNull);
     }
 }
 

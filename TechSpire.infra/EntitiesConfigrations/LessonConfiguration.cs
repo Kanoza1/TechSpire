@@ -119,9 +119,9 @@ public class LessonConfiguration : IEntityTypeConfiguration<Lesson>
             }
             );
 
-        builder.HasOne(l => l.Topic)
-               .WithMany(t => t.Lessons)
-               .HasForeignKey(l => l.TopicId)
-               .OnDelete(DeleteBehavior.SetNull);
+        //builder.HasOne(l => l.Topic)
+        //       .WithMany(t => t.Lessons)
+        //       .HasForeignKey(l => l.TopicId)
+        //       .OnDelete(DeleteBehavior.SetNull);
     }
 }

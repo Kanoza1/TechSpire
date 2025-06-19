@@ -238,7 +238,7 @@ public class QuizService : IQuizService
 
                 // Fetch all books for this topic
                 var books = await dbcontext.Books
-                    .Where(b => b.TopicId == question.TopicId.Value)
+                    //.Where(b => b.TopicId == question.TopicId.Value)
                     .ToListAsync();
                 bookSuggestions = books.Select(b => new BookSuggestion
                 {
@@ -249,8 +249,8 @@ public class QuizService : IQuizService
             }
 
             // Fetch material title and URL
-            string? materialTitle = await GetMaterialTitleAsync(question.MaterialType, question.MaterialId);
-            string? materialUrl = await GetMaterialUrlAsync(question.MaterialType, question.MaterialId);
+            //string? materialTitle = await GetMaterialTitleAsync(question.MaterialType, question.MaterialId);
+            //string? materialUrl = await GetMaterialUrlAsync(question.MaterialType, question.MaterialId);
 
             var feedback = new TechSpire.Application.Contracts.Quiz.WrongAnswerResponse
             {
@@ -410,16 +410,16 @@ public class QuizService : IQuizService
                 var topicResult = await topicService.GetTopicByIdAsync(question.TopicId.Value);
                 topicName = topicResult.IsSuccess ? topicResult.Value.Name : null;
             }
-            string? materialTitle = await GetMaterialTitleAsync(question.MaterialType, question.MaterialId);
+            //string? materialTitle = await GetMaterialTitleAsync(question.MaterialType, question.MaterialId);
             result.Add(new WrongAnswerTopicMaterialDto
             {
                 QuestionId = question.Id,
                 QuestionText = question.Text,
                 TopicId = question.TopicId,
                 TopicName = topicName,
-                MaterialType = question.MaterialType,
-                MaterialId = question.MaterialId,
-                MaterialTitle = materialTitle
+                //MaterialType = question.MaterialType,
+                //MaterialId = question.MaterialId,
+                //MaterialTitle = materialTitle
             });
         }
         return Result.Success(result);
