@@ -12,7 +12,13 @@ public record WrongAnswerResponse
     List<string> SelectedAnswerText,
     List<string> CorrectAnswerText,
     double QuestionScore,
-    double TimeTakenInSeconds
+    double TimeTakenInSeconds,
+    string? MaterialType,
+    int? MaterialId,
+    string? MaterialTitle,
+    int? TopicId,
+    string? TopicName,
+    string? MaterialUrl
     );
 
 

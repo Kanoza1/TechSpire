@@ -9,11 +9,19 @@ using TechSpire.Application.Contracts.Stage;
 using TechSpire.Application.Services;
 using TechSpire.Domain.Entities;
 using TechSpire.infra.Dbcontext;
+using TechSpire.Application.Dto;
 
 namespace TechSpire.infra.Services;
-public class QuizService(AppDbcontext dbcontext) : IQuizService
+public class QuizService : IQuizService
 {
-    private readonly AppDbcontext dbcontext = dbcontext;
+    private readonly AppDbcontext dbcontext;
+    private readonly ITopicService topicService;
+
+    public QuizService(AppDbcontext dbcontext, ITopicService topicService)
+    {
+        this.dbcontext = dbcontext;
+        this.topicService = topicService;
+    }
 
     public async Task<Result<List<QuizResponse>>> GetAllQuizsForStage(int stageId)
     {
@@ -181,6 +189,8 @@ public class QuizService(AppDbcontext dbcontext) : IQuizService
 
         var userAnswersToSave = new List<UserAnswer>();
         var questionFeedbackList = new List<WrongAnswerResponse>();
+        var totalQuestions = questions.Count;
+        var correctQuestions = 0;
 
         foreach (var question in questions)
         {
@@ -196,7 +206,14 @@ public class QuizService(AppDbcontext dbcontext) : IQuizService
                 .Where(a => submittedAnswerIds.Contains(a.Id))
                 .ToList();
 
-            // Save user answers
+            // Determine if the answer is wrong (none of the selected answers are correct OR no answers selected)
+            bool isWrong = selectedAnswers.Count == 0 || !selectedAnswers.Any(a => a.IsCorrect);
+            
+            // Count correct questions for percentage calculation
+            if (!isWrong && selectedAnswers.Any())
+                correctQuestions++;
+            
+            // Save user answers (for all questions, not just wrong ones)
             foreach (var ans in selectedAnswers)
             {
                 userAnswersToSave.Add(new UserAnswer
@@ -207,11 +224,20 @@ public class QuizService(AppDbcontext dbcontext) : IQuizService
                     TimeTakenInSeconds = answers.FirstOrDefault(a => a.QuestionId == question.Id)?.TimeTakenInSeconds ?? 0
                 });
             }
+            
+            // Only add to feedback list if the answer is wrong
+            if (!isWrong) continue;
 
-            // Calculate score for the question (partial credit)
-            var correctSelected = selectedAnswers.Count(a => correctAnswerIds.Contains(a.Id));
-            var totalCorrect = correctAnswerIds.Count;
-            double questionScore = totalCorrect == 0 ? 0 : (correctSelected * 100.0) / totalCorrect;
+            // Fetch topic info
+            string? topicName = null;
+            if (question.TopicId.HasValue)
+            {
+                var topicResult = await topicService.GetTopicByIdAsync(question.TopicId.Value);
+                topicName = topicResult.IsSuccess ? topicResult.Value.Name : null;
+            }
+            // Fetch material title and URL
+            string? materialTitle = await GetMaterialTitleAsync(question.MaterialType, question.MaterialId);
+            string? materialUrl = await GetMaterialUrlAsync(question.MaterialType, question.MaterialId);
 
             var feedback = new WrongAnswerResponse
             (
@@ -221,10 +247,15 @@ public class QuizService(AppDbcontext dbcontext) : IQuizService
                 [.. question.Answers
                     .Where(a => a.IsCorrect)
                     .Select(a => a.Text)],
-                questionScore,
-                answers.FirstOrDefault(a => a.QuestionId == question.Id)?.TimeTakenInSeconds ?? 0
+                0, // questionScore for wrong answers
+                answers.FirstOrDefault(a => a.QuestionId == question.Id)?.TimeTakenInSeconds ?? 0,
+                question.MaterialType,
+                question.MaterialId,
+                materialTitle,
+                question.TopicId,
+                topicName,
+                materialUrl
             );
-
             questionFeedbackList.Add(feedback);
         }
 
@@ -245,10 +276,8 @@ public class QuizService(AppDbcontext dbcontext) : IQuizService
         await dbcontext.UserAnswers.AddRangeAsync(userAnswersToSave);
         await dbcontext.SaveChangesAsync();
 
-        // Save the quiz result (average of per-question scores)
-        double correctPercentage = questionFeedbackList.Any() ?
-            questionFeedbackList.Average(q => q.QuestionScore) : 0;
-
+        // Calculate correct and wrong percentages
+        double correctPercentage = totalQuestions > 0 ? (correctQuestions * 100.0) / totalQuestions : 0;
         double wrongPercentage = 100 - correctPercentage;
 
         var result = new UserQuizResult
@@ -305,6 +334,92 @@ public class QuizService(AppDbcontext dbcontext) : IQuizService
         return Result.Success(response);
     }
 
+    private async Task<string?> GetMaterialTitleAsync(string? materialType, int? materialId)
+    {
+        if (string.IsNullOrEmpty(materialType) || materialId == null)
+            return null;
+        switch (materialType)
+        {
+            case "Lesson":
+                return await dbcontext.Lessons.Where(l => l.Id == materialId).Select(l => l.Title).FirstOrDefaultAsync();
+            case "Article":
+                return await dbcontext.Articles.Where(a => a.Id == materialId).Select(a => a.Title).FirstOrDefaultAsync();
+            case "Book":
+                return await dbcontext.Books.Where(b => b.Id == materialId).Select(b => b.Title).FirstOrDefaultAsync();
+            case "Post":
+                return await dbcontext.Posts.Where(p => p.Id == materialId).Select(p => p.Title).FirstOrDefaultAsync();
+            default:
+                return null;
+        }
+    }
+
+    private async Task<string?> GetMaterialUrlAsync(string? materialType, int? materialId)
+    {
+        if (string.IsNullOrEmpty(materialType) || materialId == null)
+            return null;
+        switch (materialType)
+        {
+            case "Lesson":
+                return null; // Add logic if lessons have URLs
+            case "Article":
+                return await dbcontext.Articles.Where(a => a.Id == materialId).Select(a => a.ArticleUrl).FirstOrDefaultAsync();
+            case "Book":
+                return await dbcontext.Books.Where(b => b.Id == materialId).Select(b => b.BookUrl).FirstOrDefaultAsync();
+            case "Post":
+                return await dbcontext.Posts.Where(p => p.Id == materialId).Select(p => p.PostUrl).FirstOrDefaultAsync();
+            default:
+                return null;
+        }
+    }
+
+    public async Task<Result<List<WrongAnswerTopicMaterialDto>>> GetWrongAnswerTopicsAndMaterialsAsync(string userId, int quizId)
+    {
+        // Get the latest quiz attempt for this user and quiz
+        var userQuizResult = await dbcontext.UserQuizResults
+            .Where(r => r.UserId == userId && r.QuizId == quizId)
+            .OrderByDescending(r => r.SubmittedAt)
+            .FirstOrDefaultAsync();
+        if (userQuizResult == null)
+            return Result.Failure<List<WrongAnswerTopicMaterialDto>>(new Error("Quiz.NotFound", "No quiz attempt found for this user.", 404));
+
+        // Get all user answers for this attempt
+        var userAnswers = await dbcontext.UserAnswers
+            .Where(ua => ua.UserId == userId)
+            .Join(dbcontext.Questions.Where(q => q.QuizId == quizId),
+                  ua => ua.QuestionId,
+                  q => q.Id,
+                  (ua, q) => new { ua, q })
+            .ToListAsync();
+
+        var wrongAnswers = userAnswers
+            .Where(x => x.q.Answers.Any(a => a.Id == x.ua.AnswerId && !a.IsCorrect))
+            .Select(x => x.q)
+            .Distinct()
+            .ToList();
+
+        var result = new List<WrongAnswerTopicMaterialDto>();
+        foreach (var question in wrongAnswers)
+        {
+            string? topicName = null;
+            if (question.TopicId.HasValue)
+            {
+                var topicResult = await topicService.GetTopicByIdAsync(question.TopicId.Value);
+                topicName = topicResult.IsSuccess ? topicResult.Value.Name : null;
+            }
+            string? materialTitle = await GetMaterialTitleAsync(question.MaterialType, question.MaterialId);
+            result.Add(new WrongAnswerTopicMaterialDto
+            {
+                QuestionId = question.Id,
+                QuestionText = question.Text,
+                TopicId = question.TopicId,
+                TopicName = topicName,
+                MaterialType = question.MaterialType,
+                MaterialId = question.MaterialId,
+                MaterialTitle = materialTitle
+            });
+        }
+        return Result.Success(result);
+    }
 }
 
 

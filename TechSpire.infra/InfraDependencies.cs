@@ -32,7 +32,13 @@ public static class InfraDependencies
         Services.AddScoped<IAuthService, AuthService>();
         Services.AddScoped<IJwtProvider, JwtProvider>();
         Services.AddScoped<IStageService, StageService>();
-        Services.AddScoped<IQuizService, QuizService>();
+        Services.AddScoped<ITopicService, TopicSeedService>();
+        Services.AddScoped<IQuizService, QuizService>(provider =>
+        {
+            var dbcontext = provider.GetRequiredService<AppDbcontext>();
+            var topicService = provider.GetRequiredService<ITopicService>();
+            return new QuizService(dbcontext, topicService);
+        });
         Services.AddScoped<IFavService, FavService>();
         Services.AddScoped<IDataService, DataService>();
         Services.AddScoped<ITimeService, TimeService>();

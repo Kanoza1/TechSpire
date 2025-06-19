@@ -84,5 +84,10 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
                 PostUrl = "https://www.tomasbeuzen.com/python-programming-for-data-science/README.html",
             }
             );
+
+        builder.HasOne(p => p.Topic)
+               .WithMany(t => t.Posts)
+               .HasForeignKey(p => p.TopicId)
+               .OnDelete(DeleteBehavior.SetNull);
     }
 }

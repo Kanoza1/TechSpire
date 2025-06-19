@@ -8,7 +8,6 @@ using TechSpire.Application.Abstraction;
 using TechSpire.Application.Dto;
 using TechSpire.Domain.Entities;
 using TechSpire.infra.Dbcontext;
-using TechSpire.infra.Migrations;
 using static TechSpire.infra.Services.Fucckinglearning.TimeService;
 
 namespace TechSpire.infra.Services.Fucckinglearning;

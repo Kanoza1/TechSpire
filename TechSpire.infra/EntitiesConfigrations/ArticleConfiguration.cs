@@ -84,6 +84,11 @@ public class ArticleConfiguration : IEntityTypeConfiguration<Article>
                 ArticleUrl = "https://www.w3schools.com/python/python_ml_getting_started.asp",
             }
             );
+
+        builder.HasOne(a => a.Topic)
+               .WithMany(t => t.Articles)
+               .HasForeignKey(a => a.TopicId)
+               .OnDelete(DeleteBehavior.SetNull);
     }
 }
 

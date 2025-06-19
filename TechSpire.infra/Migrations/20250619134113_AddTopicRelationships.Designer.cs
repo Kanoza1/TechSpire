@@ -12,8 +12,8 @@ using TechSpire.infra.Dbcontext;
 namespace TechSpire.infra.Migrations
 {
     [DbContext(typeof(AppDbcontext))]
-    [Migration("20250602082855_DataAdding")]
-    partial class DataAdding
+    [Migration("20250619134113_AddTopicRelationships")]
+    partial class AddTopicRelationships
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -292,9 +292,14 @@ namespace TechSpire.infra.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TopicId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("StageId");
+
+                    b.HasIndex("TopicId");
 
                     b.ToTable("Articles");
 
@@ -409,25 +414,40 @@ namespace TechSpire.infra.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TopicId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("StageId");
+
+                    b.HasIndex("TopicId");
 
                     b.ToTable("Books");
                 });
 
             modelBuilder.Entity("TechSpire.Domain.Entities.Fav", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
 
                     b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("UserId", "ItemId", "Type");
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Favs");
                 });
@@ -451,9 +471,14 @@ namespace TechSpire.infra.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TopicId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("StageId");
+
+                    b.HasIndex("TopicId");
 
                     b.ToTable("Lessons");
 
@@ -592,9 +617,14 @@ namespace TechSpire.infra.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TopicId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("StageId");
+
+                    b.HasIndex("TopicId");
 
                     b.ToTable("Posts");
 
@@ -690,6 +720,12 @@ namespace TechSpire.infra.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("MaterialId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MaterialType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("QuizId")
                         .HasColumnType("int");
 
@@ -697,11 +733,60 @@ namespace TechSpire.infra.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TopicId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("QuizId");
 
+                    b.HasIndex("TopicId");
+
                     b.ToTable("Questions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            QuizId = 1,
+                            Text = "What is a variable in C#?",
+                            TopicId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            QuizId = 1,
+                            Text = "What is a class in OOP?",
+                            TopicId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            QuizId = 1,
+                            Text = "What is a list in C#?",
+                            TopicId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            QuizId = 1,
+                            Text = "What is machine learning?",
+                            TopicId = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            QuizId = 1,
+                            Text = "What is data analysis?",
+                            TopicId = 5
+                        },
+                        new
+                        {
+                            Id = 6,
+                            QuizId = 1,
+                            Text = "What is data science?",
+                            TopicId = 6
+                        });
                 });
 
             modelBuilder.Entity("TechSpire.Domain.Entities.Quiz", b =>
@@ -723,11 +808,25 @@ namespace TechSpire.infra.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TopicId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("StangeId");
 
+                    b.HasIndex("TopicId");
+
                     b.ToTable("Quizzes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Test your knowledge of C# basics.",
+                            StangeId = 1,
+                            Title = "C# Basics"
+                        });
                 });
 
             modelBuilder.Entity("TechSpire.Domain.Entities.Stage", b =>
@@ -764,6 +863,28 @@ namespace TechSpire.infra.Migrations
                         });
                 });
 
+            modelBuilder.Entity("TechSpire.Domain.Entities.Topic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StageId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StageId");
+
+                    b.ToTable("Topics");
+                });
+
             modelBuilder.Entity("TechSpire.Domain.Entities.UserAnswer", b =>
                 {
                     b.Property<int>("Id")
@@ -777,6 +898,9 @@ namespace TechSpire.infra.Migrations
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
+
+                    b.Property<double>("TimeTakenInSeconds")
+                        .HasColumnType("float");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -1024,7 +1148,14 @@ namespace TechSpire.infra.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("TechSpire.Domain.Entities.Topic", "Topic")
+                        .WithMany("Articles")
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Stage");
+
+                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("TechSpire.Domain.Entities.Book", b =>
@@ -1035,7 +1166,13 @@ namespace TechSpire.infra.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("TechSpire.Domain.Entities.Topic", "Topic")
+                        .WithMany("Books")
+                        .HasForeignKey("TopicId");
+
                     b.Navigation("Stage");
+
+                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("TechSpire.Domain.Entities.Fav", b =>
@@ -1057,7 +1194,14 @@ namespace TechSpire.infra.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("TechSpire.Domain.Entities.Topic", "Topic")
+                        .WithMany("Lessons")
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Stage");
+
+                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("TechSpire.Domain.Entities.Post", b =>
@@ -1068,7 +1212,14 @@ namespace TechSpire.infra.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("TechSpire.Domain.Entities.Topic", "Topic")
+                        .WithMany("Posts")
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Stage");
+
+                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("TechSpire.Domain.Entities.Question", b =>
@@ -1079,7 +1230,14 @@ namespace TechSpire.infra.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("TechSpire.Domain.Entities.Topic", "Topic")
+                        .WithMany("Questions")
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Quiz");
+
+                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("TechSpire.Domain.Entities.Quiz", b =>
@@ -1090,7 +1248,25 @@ namespace TechSpire.infra.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("TechSpire.Domain.Entities.Topic", "Topic")
+                        .WithMany("Quizzes")
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Stange");
+
+                    b.Navigation("Topic");
+                });
+
+            modelBuilder.Entity("TechSpire.Domain.Entities.Topic", b =>
+                {
+                    b.HasOne("TechSpire.Domain.Entities.Stage", "Stage")
+                        .WithMany()
+                        .HasForeignKey("StageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Stage");
                 });
 
             modelBuilder.Entity("TechSpire.Domain.Entities.UserAnswer", b =>
@@ -1214,6 +1390,21 @@ namespace TechSpire.infra.Migrations
                     b.Navigation("Lessons");
 
                     b.Navigation("Posts");
+
+                    b.Navigation("Quizzes");
+                });
+
+            modelBuilder.Entity("TechSpire.Domain.Entities.Topic", b =>
+                {
+                    b.Navigation("Articles");
+
+                    b.Navigation("Books");
+
+                    b.Navigation("Lessons");
+
+                    b.Navigation("Posts");
+
+                    b.Navigation("Questions");
 
                     b.Navigation("Quizzes");
                 });

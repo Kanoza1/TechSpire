@@ -6,5 +6,6 @@ public class Lesson
     public string Content { get; set; } = string.Empty;
     public int StageId { get; set; }
     public Stage Stage { get; set; } = default!;
-
+    public int? TopicId { get; set; }
+    public Topic? Topic { get; set; }
 }

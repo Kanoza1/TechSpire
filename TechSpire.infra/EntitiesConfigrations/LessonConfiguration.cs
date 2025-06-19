@@ -118,5 +118,10 @@ public class LessonConfiguration : IEntityTypeConfiguration<Lesson>
                 Content = "In this lesson, we will introduce you to web development in Python. You will learn about popular web frameworks such as Flask and Django, and how to build simple web applications.\n Python Web Development Frameworks\r\nPython has several popular web frameworks, including Flask and Django.\r\n\r\nThese frameworks provide tools and libraries for building web applications quickly and efficiently.",
             }
             );
+
+        builder.HasOne(l => l.Topic)
+               .WithMany(t => t.Lessons)
+               .HasForeignKey(l => l.TopicId)
+               .OnDelete(DeleteBehavior.SetNull);
     }
 }

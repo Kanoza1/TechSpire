@@ -47,4 +47,12 @@ public class QuizController(IQuizService service) : ControllerBase
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
+
+    [HttpGet("wrong-answers/topics/{quizId}")]
+    public async Task<IActionResult> GetWrongAnswerTopicsAndMaterials(int quizId)
+    {
+        var userId = User.GetUserId()!;
+        var result = await service.GetWrongAnswerTopicsAndMaterialsAsync(userId, quizId);
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
 }
