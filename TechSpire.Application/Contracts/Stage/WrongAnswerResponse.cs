@@ -20,11 +20,3 @@ public record WrongAnswerResponse
     string? TopicName,
     string? MaterialUrl
     );
-
-
-public record Allinone(
-    
-    List<WrongAnswerResponse> WrongAnswers,
-    double Success ,
-    double Failed
-    );

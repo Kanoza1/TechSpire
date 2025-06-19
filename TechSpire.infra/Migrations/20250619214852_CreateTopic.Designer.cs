@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TechSpire.infra.Dbcontext;
 
@@ -11,9 +12,11 @@ using TechSpire.infra.Dbcontext;
 namespace TechSpire.infra.Migrations
 {
     [DbContext(typeof(AppDbcontext))]
-    partial class AppDbcontextModelSnapshot : ModelSnapshot
+    [Migration("20250619214852_CreateTopic")]
+    partial class CreateTopic
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,6 +181,358 @@ namespace TechSpire.infra.Migrations
                     b.HasIndex("QuestionId");
 
                     b.ToTable("Answers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsCorrect = true,
+                            QuestionId = 1,
+                            Text = "Python is a programming language."
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsCorrect = false,
+                            QuestionId = 1,
+                            Text = "Python is a snake species."
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsCorrect = true,
+                            QuestionId = 2,
+                            Text = "Python supports multiple programming paradigms."
+                        },
+                        new
+                        {
+                            Id = 4,
+                            IsCorrect = false,
+                            QuestionId = 2,
+                            Text = "Python only supports procedural programming."
+                        },
+                        new
+                        {
+                            Id = 5,
+                            IsCorrect = true,
+                            QuestionId = 3,
+                            Text = "Python is dynamically typed."
+                        },
+                        new
+                        {
+                            Id = 6,
+                            IsCorrect = false,
+                            QuestionId = 3,
+                            Text = "Python is statically typed."
+                        },
+                        new
+                        {
+                            Id = 7,
+                            IsCorrect = true,
+                            QuestionId = 4,
+                            Text = "Python has a large standard library."
+                        },
+                        new
+                        {
+                            Id = 8,
+                            IsCorrect = false,
+                            QuestionId = 4,
+                            Text = "Python has a small standard library."
+                        },
+                        new
+                        {
+                            Id = 9,
+                            IsCorrect = true,
+                            QuestionId = 5,
+                            Text = "Python supports object-oriented programming."
+                        },
+                        new
+                        {
+                            Id = 10,
+                            IsCorrect = false,
+                            QuestionId = 5,
+                            Text = "Python does not support object-oriented programming."
+                        },
+                        new
+                        {
+                            Id = 11,
+                            IsCorrect = true,
+                            QuestionId = 6,
+                            Text = "Python supports functional programming."
+                        },
+                        new
+                        {
+                            Id = 12,
+                            IsCorrect = false,
+                            QuestionId = 6,
+                            Text = "Python does not support functional programming."
+                        },
+                        new
+                        {
+                            Id = 13,
+                            IsCorrect = true,
+                            QuestionId = 7,
+                            Text = "Python supports concurrent programming."
+                        },
+                        new
+                        {
+                            Id = 14,
+                            IsCorrect = false,
+                            QuestionId = 7,
+                            Text = "Python does not support concurrent programming."
+                        },
+                        new
+                        {
+                            Id = 15,
+                            IsCorrect = true,
+                            QuestionId = 8,
+                            Text = "Python supports metaprogramming."
+                        },
+                        new
+                        {
+                            Id = 16,
+                            IsCorrect = false,
+                            QuestionId = 8,
+                            Text = "Python does not support metaprogramming."
+                        },
+                        new
+                        {
+                            Id = 17,
+                            IsCorrect = true,
+                            QuestionId = 9,
+                            Text = "Python supports introspection."
+                        },
+                        new
+                        {
+                            Id = 18,
+                            IsCorrect = false,
+                            QuestionId = 9,
+                            Text = "Python does not support introspection."
+                        },
+                        new
+                        {
+                            Id = 19,
+                            IsCorrect = true,
+                            QuestionId = 10,
+                            Text = "Python supports reflection."
+                        },
+                        new
+                        {
+                            Id = 20,
+                            IsCorrect = false,
+                            QuestionId = 10,
+                            Text = "Python does not support reflection."
+                        },
+                        new
+                        {
+                            Id = 21,
+                            IsCorrect = true,
+                            QuestionId = 11,
+                            Text = "Python supports duck typing."
+                        },
+                        new
+                        {
+                            Id = 22,
+                            IsCorrect = false,
+                            QuestionId = 11,
+                            Text = "Python does not support duck typing."
+                        },
+                        new
+                        {
+                            Id = 23,
+                            IsCorrect = true,
+                            QuestionId = 12,
+                            Text = "Python supports multiple inheritance."
+                        },
+                        new
+                        {
+                            Id = 24,
+                            IsCorrect = false,
+                            QuestionId = 12,
+                            Text = "Python does not support multiple inheritance."
+                        },
+                        new
+                        {
+                            Id = 25,
+                            IsCorrect = true,
+                            QuestionId = 13,
+                            Text = "Python supports operator overloading."
+                        },
+                        new
+                        {
+                            Id = 26,
+                            IsCorrect = false,
+                            QuestionId = 13,
+                            Text = "Python does not support operator overloading."
+                        },
+                        new
+                        {
+                            Id = 27,
+                            IsCorrect = true,
+                            QuestionId = 14,
+                            Text = "Python supports method overloading."
+                        },
+                        new
+                        {
+                            Id = 28,
+                            IsCorrect = false,
+                            QuestionId = 14,
+                            Text = "Python does not support method overloading."
+                        },
+                        new
+                        {
+                            Id = 29,
+                            IsCorrect = true,
+                            QuestionId = 15,
+                            Text = "Python supports method overriding."
+                        },
+                        new
+                        {
+                            Id = 30,
+                            IsCorrect = false,
+                            QuestionId = 15,
+                            Text = "Python does not support method overriding."
+                        },
+                        new
+                        {
+                            Id = 31,
+                            IsCorrect = true,
+                            QuestionId = 16,
+                            Text = "Python supports class variables."
+                        },
+                        new
+                        {
+                            Id = 32,
+                            IsCorrect = false,
+                            QuestionId = 16,
+                            Text = "Python does not support class variables."
+                        },
+                        new
+                        {
+                            Id = 33,
+                            IsCorrect = true,
+                            QuestionId = 17,
+                            Text = "Python supports instance variables."
+                        },
+                        new
+                        {
+                            Id = 34,
+                            IsCorrect = false,
+                            QuestionId = 17,
+                            Text = "Python does not support instance variables."
+                        },
+                        new
+                        {
+                            Id = 35,
+                            IsCorrect = true,
+                            QuestionId = 18,
+                            Text = "Python supports static variables."
+                        },
+                        new
+                        {
+                            Id = 36,
+                            IsCorrect = false,
+                            QuestionId = 18,
+                            Text = "Python does not support static variables."
+                        },
+                        new
+                        {
+                            Id = 37,
+                            IsCorrect = true,
+                            QuestionId = 19,
+                            Text = "Python supports class methods."
+                        },
+                        new
+                        {
+                            Id = 38,
+                            IsCorrect = false,
+                            QuestionId = 19,
+                            Text = "Python does not support class methods."
+                        },
+                        new
+                        {
+                            Id = 39,
+                            IsCorrect = true,
+                            QuestionId = 20,
+                            Text = "Python supports instance methods."
+                        },
+                        new
+                        {
+                            Id = 40,
+                            IsCorrect = false,
+                            QuestionId = 20,
+                            Text = "Python does not support instance methods."
+                        },
+                        new
+                        {
+                            Id = 41,
+                            IsCorrect = true,
+                            QuestionId = 21,
+                            Text = "Python supports static methods."
+                        },
+                        new
+                        {
+                            Id = 42,
+                            IsCorrect = false,
+                            QuestionId = 21,
+                            Text = "Python does not support static methods."
+                        },
+                        new
+                        {
+                            Id = 43,
+                            IsCorrect = true,
+                            QuestionId = 22,
+                            Text = "Python supports abstract classes."
+                        },
+                        new
+                        {
+                            Id = 44,
+                            IsCorrect = false,
+                            QuestionId = 22,
+                            Text = "Python does not support abstract classes."
+                        },
+                        new
+                        {
+                            Id = 45,
+                            IsCorrect = true,
+                            QuestionId = 23,
+                            Text = "Python supports interfaces."
+                        },
+                        new
+                        {
+                            Id = 46,
+                            IsCorrect = false,
+                            QuestionId = 23,
+                            Text = "Python does not support interfaces."
+                        },
+                        new
+                        {
+                            Id = 47,
+                            IsCorrect = true,
+                            QuestionId = 24,
+                            Text = "Python supports mixins."
+                        },
+                        new
+                        {
+                            Id = 48,
+                            IsCorrect = false,
+                            QuestionId = 24,
+                            Text = "Python does not support mixins."
+                        },
+                        new
+                        {
+                            Id = 49,
+                            IsCorrect = true,
+                            QuestionId = 25,
+                            Text = "Python supports decorators."
+                        },
+                        new
+                        {
+                            Id = 50,
+                            IsCorrect = false,
+                            QuestionId = 25,
+                            Text = "Python does not support decorators."
+                        });
                 });
 
             modelBuilder.Entity("TechSpire.Domain.Entities.ApplicataionUser", b =>
@@ -865,6 +1220,168 @@ namespace TechSpire.infra.Migrations
                     b.HasIndex("TopicId");
 
                     b.ToTable("Questions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            QuizId = 1,
+                            StageId = 1,
+                            Text = "1- What is the What is the correct way to create a variable in Python? ",
+                            TopicId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            QuizId = 1,
+                            StageId = 1,
+                            Text = "2-Which of the following is a valid variable name in Python?",
+                            TopicId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            QuizId = 1,
+                            StageId = 1,
+                            Text = "3-What will be the output of the following code? x = \"5\" y = 2 print(x + str(y))",
+                            TopicId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            QuizId = 1,
+                            StageId = 1,
+                            Text = "4-Which of these is not allowed when assigning variables in Python?",
+                            TopicId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            QuizId = 1,
+                            StageId = 1,
+                            Text = "5-What is the data type of the variable x in this code? x = 3.14",
+                            TopicId = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            QuizId = 1,
+                            StageId = 1,
+                            Text = "6-Which of the following is a valid way to assign a value to a variable?",
+                            TopicId = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            QuizId = 1,
+                            StageId = 1,
+                            Text = "7-What will be the value of x after this code runs? x = 10 x = x + 5",
+                            TopicId = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            QuizId = 1,
+                            StageId = 1,
+                            Text = "8-Which of the following variable names is written in snake_case?",
+                            TopicId = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            QuizId = 1,
+                            StageId = 1,
+                            Text = "9-What is the value of result after running this code? a = 4 b = 3 result = a * b",
+                            TopicId = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            QuizId = 1,
+                            StageId = 1,
+                            Text = "10-Which statement is true about variables in Python?",
+                            TopicId = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            QuizId = 2,
+                            StageId = 2,
+                            Text = "What keyword is used to define a class in Python?",
+                            TopicId = 2
+                        },
+                        new
+                        {
+                            Id = 12,
+                            QuizId = 2,
+                            StageId = 2,
+                            Text = "What is the first parameter of a method inside a class?",
+                            TopicId = 2
+                        },
+                        new
+                        {
+                            Id = 13,
+                            QuizId = 2,
+                            StageId = 2,
+                            Text = "Which method is automatically called when an object is created?",
+                            TopicId = 2
+                        },
+                        new
+                        {
+                            Id = 14,
+                            QuizId = 2,
+                            StageId = 2,
+                            Text = "What is it called when a class inherits from another class?",
+                            TopicId = 2
+                        },
+                        new
+                        {
+                            Id = 15,
+                            QuizId = 2,
+                            StageId = 2,
+                            Text = "What is the purpose of the __str__() method in a class?",
+                            TopicId = 2
+                        },
+                        new
+                        {
+                            Id = 21,
+                            QuizId = 3,
+                            StageId = 3,
+                            Text = "What is the main purpose of machine learning?",
+                            TopicId = 3
+                        },
+                        new
+                        {
+                            Id = 22,
+                            QuizId = 3,
+                            StageId = 3,
+                            Text = "Which of the following is a common type of machine learning?",
+                            TopicId = 3
+                        },
+                        new
+                        {
+                            Id = 23,
+                            QuizId = 3,
+                            StageId = 3,
+                            Text = "What is the purpose of a training dataset in machine learning?",
+                            TopicId = 3
+                        },
+                        new
+                        {
+                            Id = 24,
+                            QuizId = 3,
+                            StageId = 3,
+                            Text = "What is overfitting in machine learning?",
+                            TopicId = 3
+                        },
+                        new
+                        {
+                            Id = 25,
+                            QuizId = 3,
+                            StageId = 3,
+                            Text = "What is the purpose of a validation dataset in machine learning?",
+                            TopicId = 3
+                        });
                 });
 
             modelBuilder.Entity("TechSpire.Domain.Entities.Quiz", b =>
@@ -896,6 +1413,32 @@ namespace TechSpire.infra.Migrations
                     b.HasIndex("TopicId");
 
                     b.ToTable("Quizzes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 4,
+                            Description = "A comprehensive quiz for Python beginners covering variables, data types, conditionals, and loops.",
+                            StangeId = 1,
+                            Title = "Beginner Python Quiz",
+                            TopicId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "A comprehensive quiz for Python intermediate learners covering OOP, data structures, algorithms, and functions.",
+                            StangeId = 2,
+                            Title = "Intermediate Python Quiz",
+                            TopicId = 2
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "A comprehensive quiz for advanced Python learners covering machine learning, deep learning, and big data.",
+                            StangeId = 3,
+                            Title = "Advanced Python Quiz",
+                            TopicId = 3
+                        });
                 });
 
             modelBuilder.Entity("TechSpire.Domain.Entities.Stage", b =>
@@ -1302,7 +1845,8 @@ namespace TechSpire.infra.Migrations
 
                     b.HasOne("TechSpire.Domain.Entities.Topic", "Topic")
                         .WithMany("Questions")
-                        .HasForeignKey("TopicId");
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Quiz");
 
@@ -1319,7 +1863,8 @@ namespace TechSpire.infra.Migrations
 
                     b.HasOne("TechSpire.Domain.Entities.Topic", "Topic")
                         .WithMany("Quizzes")
-                        .HasForeignKey("TopicId");
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Stange");
 

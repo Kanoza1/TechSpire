@@ -29,26 +29,26 @@ public class TopicSeedService : ITopicService
         return Result.Success(topic);
     }
 
-    public async Task<Result> SeedTopicsAsync()
-    {
-        if (_dbContext.Topics.Any())
-            return Result.Failure(new Error("Topic.Exists", "Topics already exist in database.", 409));
+    //public async Task<Result> SeedTopicsAsync()
+    //{
+    //    if (_dbContext.Topics.Any())
+    //        return Result.Failure(new Error("Topic.Exists", "Topics already exist in database.", 409));
 
-        var topics = new List<Topic>
-        {
-            new Topic { Name = "Syntax", StageId = 1 },
-            new Topic { Name = "OOP", StageId = 1 },
-            new Topic { Name = "Data Structure", StageId = 2 },
-            new Topic { Name = "Algorithms", StageId = 2 },
-            new Topic { Name = "ML", StageId = 3 },
-            new Topic { Name = "Data Analysis", StageId = 3 },
-            new Topic { Name = "Data Science", StageId = 3 }
-        };
+    //var topics = new List<Topic>
+    //{
+    //    new Topic { Name = "Syntax", StageId = 1 },
+    //    new Topic { Name = "OOP", StageId = 1 },
+    //    new Topic { Name = "Data Structure", StageId = 2 },
+    //    new Topic { Name = "Algorithms", StageId = 2 },
+    //    new Topic { Name = "ML", StageId = 3 },
+    //    new Topic { Name = "Data Analysis", StageId = 3 },
+    //    new Topic { Name = "Data Science", StageId = 3 }
+    //};
 
-        _dbContext.Topics.AddRange(topics);
-        await _dbContext.SaveChangesAsync();
-        return Result.Success();
-    }
+    //    _dbContext.Topics.AddRange(topics);
+    //    await _dbContext.SaveChangesAsync();
+    //    return Result.Success();
+    //}
 
     public async Task<Result> AssignTopicsToQuestionsAsync()
     {

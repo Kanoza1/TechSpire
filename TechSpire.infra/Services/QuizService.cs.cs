@@ -164,10 +164,10 @@ public class QuizService : IQuizService
     //return Result.Success(ayhaga);}
 
     #endregion
-    public async Task<Result<Allinone>> SubmitUserAnswersAsync(string userId, List<UserAnswerRequest> answers)
+    public async Task<Result<List<TechSpire.Application.Contracts.Quiz.WrongAnswerResponse>>> SubmitUserAnswersAsync(string userId, List<UserAnswerRequest> answers)
     {
         if (answers == null || answers.Count == 0)
-            return Result.Failure<Allinone>(new Error("Quiz.Empty", "No answers submitted.",400));
+            return Result.Failure<List<TechSpire.Application.Contracts.Quiz.WrongAnswerResponse>>(new Error("Quiz.Empty", "No answers submitted.",400));
 
         int QuestionId = answers.First().QuestionId;
 
@@ -188,7 +188,7 @@ public class QuizService : IQuizService
             .ToDictionary(g => g.Key, g => g.Select(a => a.AnswerId).ToList());
 
         var userAnswersToSave = new List<UserAnswer>();
-        var questionFeedbackList = new List<WrongAnswerResponse>();
+        var questionFeedbackList = new List<TechSpire.Application.Contracts.Quiz.WrongAnswerResponse>();
         var totalQuestions = questions.Count;
         var correctQuestions = 0;
 
@@ -230,37 +230,42 @@ public class QuizService : IQuizService
 
             // Fetch topic info
             string? topicName = null;
+            List<BookSuggestion> bookSuggestions = new();
             if (question.TopicId.HasValue)
             {
                 var topicResult = await topicService.GetTopicByIdAsync(question.TopicId.Value);
                 topicName = topicResult.IsSuccess ? topicResult.Value.Name : null;
+
+                // Fetch all books for this topic
+                var books = await dbcontext.Books
+                    .Where(b => b.TopicId == question.TopicId.Value)
+                    .ToListAsync();
+                bookSuggestions = books.Select(b => new BookSuggestion
+                {
+                    Title = b.Title,
+                    Description = b.Description,
+                    BookUrl = b.BookUrl
+                }).ToList();
             }
+
             // Fetch material title and URL
             string? materialTitle = await GetMaterialTitleAsync(question.MaterialType, question.MaterialId);
             string? materialUrl = await GetMaterialUrlAsync(question.MaterialType, question.MaterialId);
 
-            var feedback = new WrongAnswerResponse
-            (
-                question.Id,
-                question.Text,
-                [.. selectedAnswers.Select(a => a.Text)],
-                [.. question.Answers
-                    .Where(a => a.IsCorrect)
-                    .Select(a => a.Text)],
-                0, // questionScore for wrong answers
-                answers.FirstOrDefault(a => a.QuestionId == question.Id)?.TimeTakenInSeconds ?? 0,
-                question.MaterialType,
-                question.MaterialId,
-                materialTitle,
-                question.TopicId,
-                topicName,
-                materialUrl
-            );
+            var feedback = new TechSpire.Application.Contracts.Quiz.WrongAnswerResponse
+            {
+                QuestionId = question.Id,
+                QuestionText = question.Text,
+                SelectedAnswer = string.Join(", ", selectedAnswers.Select(a => a.Text)),
+                CorrectAnswer = string.Join(", ", question.Answers.Where(a => a.IsCorrect).Select(a => a.Text)),
+                Topic = topicName,
+                BookSuggestions = bookSuggestions
+            };
             questionFeedbackList.Add(feedback);
         }
 
         if (userAnswersToSave.Count == 0)
-            return Result.Failure<Allinone>(new Error("Quiz.InvalidAnswers", "No valid answers submitted.",400));
+            return Result.Failure<List<TechSpire.Application.Contracts.Quiz.WrongAnswerResponse>>(new Error("Quiz.InvalidAnswers", "No valid answers submitted.",400));
 
         // Remove existing answers for this user and quiz
         var submittedQuestionIds = groupedAnswers.Keys.ToList();
@@ -292,8 +297,7 @@ public class QuizService : IQuizService
         dbcontext.UserQuizResults.Add(result);
         await dbcontext.SaveChangesAsync();
 
-        var allinoneResult = new Allinone(questionFeedbackList, correctPercentage, wrongPercentage);
-        return Result.Success(allinoneResult);
+        return Result.Success(questionFeedbackList);
     }
 
     public async Task<Result<UserQuizSummaryResponse>> GetUserQuizSummaryAsync(string userId)

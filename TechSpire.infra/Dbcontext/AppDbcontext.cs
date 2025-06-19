@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Diagnostics;
-
+using System.Reflection;
+using TechSpire.infra.EntitiesConfigrations;
 
 namespace TechSpire.infra.Dbcontext;
 public class AppDbcontext(DbContextOptions<AppDbcontext> options) : IdentityDbContext<ApplicataionUser>(options)
@@ -31,6 +32,7 @@ public class AppDbcontext(DbContextOptions<AppDbcontext> options) : IdentityDbCo
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        //modelBuilder.ApplyConfiguration(new TechSpire.infra.EntitiesConfigrations.AnswerConfiguration());
 
         var cascadeFKs = modelBuilder.Model.GetEntityTypes()
             .SelectMany(t => t.GetForeignKeys())
@@ -42,11 +44,17 @@ public class AppDbcontext(DbContextOptions<AppDbcontext> options) : IdentityDbCo
 
         base.OnModelCreating(modelBuilder);
 
+        //modelBuilder.ApplyConfiguration(new TopicConfiguration());
+        //modelBuilder.ApplyConfiguration(new QuestionConfiguration());
+        //modelBuilder.ApplyConfiguration(new AnswerConfiguration());
+
+
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.ConfigureWarnings(warnings =>
             warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
     }
+
 }
 

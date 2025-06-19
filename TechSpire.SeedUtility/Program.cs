@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TechSpire.infra.Dbcontext;
 using TechSpire.infra.Services;
@@ -33,4 +33,4 @@ class Program
             Console.WriteLine($"Error during extraction: {ex.Message}");
         }
     }
-} 
+}
