@@ -1,4 +1,6 @@
-﻿namespace TechSpire.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace TechSpire.Domain.Entities;
 public class Question
 {
     public int Id { get; set; }
@@ -6,4 +8,8 @@ public class Question
     public int QuizId { get; set; }
     public Quiz Quiz { get; set; } = default!;
     public List<Answer> Answers { get; set; } = [];
+
+    public int? TopicId { get; set; }
+    [ForeignKey(nameof(TopicId))]
+    public Topic Topic { get; set; }
 }

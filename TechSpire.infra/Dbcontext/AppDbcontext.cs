@@ -21,11 +21,7 @@ public class AppDbcontext(DbContextOptions<AppDbcontext> options) : IdentityDbCo
     public DbSet<UserQuizResult> UserQuizResults { get; set; } = default!;
     public DbSet<UserBookInProgress> UserBookInProgress { get; set; } = default!;
     public DbSet<UsersProgress> UsersProgress { get; set; } = default!;
-
-
-
-
-
+    public DbSet<Topic> Topics { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -8,4 +8,5 @@ public class Book
     public string BookUrl { get; set; } = string.Empty;
     public int StageId { get; set; }
     public Stage Stage { get; set; } = default!;
+    public ICollection<Topic> Topics { get; set; } = new List<Topic>();
 }

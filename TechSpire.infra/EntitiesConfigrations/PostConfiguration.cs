@@ -16,7 +16,7 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
                 StageId = 1,
                 Title = "Introduction to Python",
                 Description = "A beginner's guide to Python programming language.",
-                PostUrl = "https://harmash.com/tutorials/python/overview",
+                PostUrl = "https://harmash.com/tutorials/python/overview"
 
             },
             new Post

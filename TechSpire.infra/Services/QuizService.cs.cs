@@ -169,6 +169,7 @@ public class QuizService(AppDbcontext dbcontext) : IQuizService
         var questions = await dbcontext.Questions
             .Where(q => q.QuizId == quizId)
             .Include(q => q.Answers)
+            .Include(q => q.Topic)
             .ToListAsync();
 
         var validQuestionIds = questions.Select(q => q.Id).ToHashSet();
@@ -222,7 +223,9 @@ public class QuizService(AppDbcontext dbcontext) : IQuizService
                     .Where(a => a.IsCorrect)
                     .Select(a => a.Text)],
                 questionScore,
-                answers.FirstOrDefault(a => a.QuestionId == question.Id)?.TimeTakenInSeconds ?? 0
+                answers.FirstOrDefault(a => a.QuestionId == question.Id)?.TimeTakenInSeconds ?? 0,
+                question.Topic?.Name ?? "No Topic",
+                question.Topic?.Id ?? 0
             );
 
             questionFeedbackList.Add(feedback);

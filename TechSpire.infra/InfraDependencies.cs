@@ -36,6 +36,7 @@ public static class InfraDependencies
         Services.AddScoped<IFavService, FavService>();
         Services.AddScoped<IDataService, DataService>();
         Services.AddScoped<ITimeService, TimeService>();
+        Services.AddScoped<ITopicService, TopicService>();
 
         Services.AddProblemDetails();
 

@@ -18,6 +18,7 @@ public class ArticleConfiguration : IEntityTypeConfiguration<Article>
                 Description = "A beginner's guide to Python programming language.",
                 ArticleUrl = "https://www.w3schools.com/python/",
 
+
             },
             new Article
             {
