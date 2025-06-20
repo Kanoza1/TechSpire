@@ -18,13 +18,37 @@ public class QuizService(AppDbcontext dbcontext) : IQuizService
     public async Task<Result<List<QuizResponse>>> GetAllQuizsForStage(int stageId)
     {
         var Quizzes = await dbcontext.Quizzes
-            .Where(c=>c.StangeId == stageId)
-            .ProjectToType<QuizResponse>()
-            .AsNoTracking()
+            .Where(c => c.StangeId == stageId)
+            .Select(q => new QuizResponse
+            (
+                q.Id,
+                q.Title,
+                q.Description,
+                q.StangeId,
+                q.Questions.Select(qs => new QuestionResponse
+                (
+                    qs.Id,
+                    qs.Text,
+                    qs.Answers.Select(a => new AnswerResponse
+                    (
+                        a.Id,
+                        a.Text
+                    )).ToList()
+                )).OrderBy(q => Guid.NewGuid())
+                   .Take(20).ToList()
+            )).AsNoTracking()
             .ToListAsync();
 
+        //var Quizzes = await dbcontext.Quizzes
+        //.Where(q => q.StangeId == stageId)
+        //.ProjectToType<QuizResponse>()
+        //.AsNoTracking()
+        //.OrderBy(q => Guid.NewGuid())
+        //.Take(20)
+        //.ToListAsync();
+
         if (Quizzes == null)
-            return Result.Failure<List<QuizResponse>>(new Error("Quiz.Notfound", "No quiz found for the given stage.",StatusCodes.Status404NotFound));
+            return Result.Failure<List<QuizResponse>>(new Error("Quiz.Notfound", "No quiz found for the given stage.", StatusCodes.Status404NotFound));
 
         return Result.Success(Quizzes);
     }
@@ -33,14 +57,46 @@ public class QuizService(AppDbcontext dbcontext) : IQuizService
     {
         var Quizzes = await dbcontext.Quizzes
             .Where(c => c.Id == Id)
-            .ProjectToType<QuizResponse>()
+            .Select(q => new QuizResponse
+            (
+                q.Id,
+                q.Title,
+                q.Description,
+                q.StangeId,
+                q.Questions.Select(qs => new QuestionResponse
+                (
+                    qs.Id,
+                    qs.Text,
+                    qs.Answers.Select(a => new AnswerResponse
+                    (
+                        a.Id,
+                        a.Text
+                    )).ToList()
+                )).OrderBy(q => Guid.NewGuid())
+                   .Take(20).ToList()
+            ))
             .AsNoTracking()
             .FirstOrDefaultAsync();
+
+        //var Quizzes =  await dbcontext.Quizzes
+        //        .Where(q => q.Id == Id)
+        //        .ProjectToType<QuizResponse>()
+        //        .AsNoTracking()
+        //        .OrderBy(q => Guid.NewGuid())
+        //        .Take(20)
+        //        .FirstOrDefaultAsync();
+
 
         if (Quizzes == null)
             return Result.Failure<QuizResponse>(new Error("Quiz.Notfound", "No quiz found for the given Quiz ID.", StatusCodes.Status404NotFound));
 
+        //Quizzes.Questions.OrderBy(q => Guid.NewGuid())
+        //    .Take(20); // Randomly select 20 questions for the quiz
+
+
         return Result.Success(Quizzes);
+
+
     }
 
     #region submit
@@ -159,11 +215,11 @@ public class QuizService(AppDbcontext dbcontext) : IQuizService
     public async Task<Result<Allinone>> SubmitUserAnswersAsync(string userId, List<UserAnswerRequest> answers)
     {
         if (answers == null || answers.Count == 0)
-            return Result.Failure<Allinone>(new Error("Quiz.Empty", "No answers submitted.",400));
+            return Result.Failure<Allinone>(new Error("Quiz.Empty", "No answers submitted.", 400));
 
         int QuestionId = answers.First().QuestionId;
 
-        var quizId = await dbcontext.Questions.Where(c=>c.Id == QuestionId).Select(c => c.QuizId).FirstOrDefaultAsync();
+        var quizId = await dbcontext.Questions.Where(c => c.Id == QuestionId).Select(c => c.QuizId).FirstOrDefaultAsync();
 
         // Load quiz questions and answers
         var questions = await dbcontext.Questions
@@ -232,7 +288,7 @@ public class QuizService(AppDbcontext dbcontext) : IQuizService
         }
 
         if (userAnswersToSave.Count == 0)
-            return Result.Failure<Allinone>(new Error("Quiz.InvalidAnswers", "No valid answers submitted.",400));
+            return Result.Failure<Allinone>(new Error("Quiz.InvalidAnswers", "No valid answers submitted.", 400));
 
         // Remove existing answers for this user and quiz
         var submittedQuestionIds = groupedAnswers.Keys.ToList();
@@ -279,7 +335,7 @@ public class QuizService(AppDbcontext dbcontext) : IQuizService
             .ToListAsync();
 
         if (quizResults.Count == 0)
-            return Result.Failure<UserQuizSummaryResponse>(new Error("Quiz.NoneFound", "No quiz attempts found.",400));
+            return Result.Failure<UserQuizSummaryResponse>(new Error("Quiz.NoneFound", "No quiz attempts found.", 400));
 
         var attempts = quizResults.Select(r => new QuizAttemptSummary
         (
@@ -287,9 +343,9 @@ public class QuizService(AppDbcontext dbcontext) : IQuizService
             r.Quiz?.Title ?? "Untitled Quiz",
             r.CorrectPercentage,
             r.SubmittedAt
-            //await dbcontext.UserAnswers
-            //    .Where(ua => ua.UserId == userId && ua.Question.QuizId == r.QuizId)
-            //    .ToDictionaryAsync(ua => ua.QuestionId, ua => ua.TimeTakenInSeconds)
+        //await dbcontext.UserAnswers
+        //    .Where(ua => ua.UserId == userId && ua.Question.QuizId == r.QuizId)
+        //    .ToDictionaryAsync(ua => ua.QuestionId, ua => ua.TimeTakenInSeconds)
         )).ToList();
 
         double averageScore = quizResults.Average(r => r.CorrectPercentage);
